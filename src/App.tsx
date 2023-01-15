@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { DOMMessage, DOMMessageResponse } from './chromeServices/types';
+import { DOMMessage, DOMMessageResponse } from './types';
 
 function App() {
   const [title, setTitle] = useState<string>('');
@@ -20,8 +20,13 @@ function App() {
               type: 'GET_DOM',
             } as DOMMessage,
             (response: DOMMessageResponse) => {
-              setTitle(response.title);
-              setHeadlines(response.headlines);
+              if (!chrome.runtime.lastError) {
+                setTitle(response.title);
+                setHeadlines(response.headlines);
+              } else {
+                setTitle('Unexpected lastError!!');
+                setHeadlines(['Unexpected lastError headline!!']);
+              }
             }
           );
         }
